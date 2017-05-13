@@ -3,12 +3,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minWidth="25px"
-    android:minHeight="25px">
-    <FrameLayout
-        android:minWidth="25px"
-        android:minHeight="25px"
+    android:gravity="center">
+    <ImageView
+        android:id="@+id/tabIcon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/frameLayout" />
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="false" />
 </LinearLayout>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:weightSum="100"
+        android:id="@+id/linearLayout1">
+        <TextView
+            android:text="Параметр один"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/textView1"
+            android:gravity="center_vertical" />
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/editText1"
+            android:editable="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:weightSum="100"
+        android:id="@+id/linearLayout2">
+        <TextView
+            android:text="Параметр два"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/textView2"
+            android:gravity="center_vertical" />
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/editText2"
+            android:editable="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:weightSum="100"
+        android:id="@+id/linearLayout3">
+        <TextView
+            android:text="Параметр три"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/textView3"
+            android:gravity="center_vertical" />
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/editText3"
+            android:editable="true" />
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:id="@+id/space2" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/space1" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:weightSum="100"
+        android:id="@+id/linearLayout4">
+        <TextView
+            android:text="Результат один"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/textView4"
+            android:gravity="center_vertical" />
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/editText4"
+            android:editable="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:weightSum="100"
+        android:id="@+id/linearLayout5">
+        <TextView
+            android:text="Результат два"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/textView5"
+            android:gravity="center_vertical" />
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:id="@+id/editText5"
+            android:editable="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15"
+        android:id="@+id/linearLayout6">
+        <TextView
+            android:text="Текст подсказки"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/textView6"
+            android:gravity="center" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:id="@+id/linearLayout7">
+        <Button
+            android:text="Посчитать"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button1"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:textSize="15dp" />
+    </LinearLayout>
+</LinearLayout>

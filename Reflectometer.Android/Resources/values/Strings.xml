@@ -2,4 +2,7 @@
 <resources>
     <string name="Hello">Hello World, Click Me!</string>
     <string name="ApplicationName">Reflectometer.Android</string>
+    <string name="CalculatorTabLabel">Калькулятор</string>
+    <string name="HelpTabLabel">Справка</string>
+    <string name="VisualizationTabLabel">Визуализация</string>
 </resources>
