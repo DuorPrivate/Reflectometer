@@ -2,6 +2,10 @@
 using Android.Widget;
 using Android.OS;
 using Reflectometer.Android.Fragments;
+using Android.Text;
+using Reflectometer.Core;
+using System;
+using Android.Icu.Text;
 
 namespace Reflectometer.Android
 {
@@ -10,6 +14,8 @@ namespace Reflectometer.Android
     {
 
         static readonly string Tag = "ActionBarTabsSupport";
+
+        public LongLine LongLine { get; set; }
 
         Fragment[] _fragments;
 
@@ -28,11 +34,12 @@ namespace Reflectometer.Android
                              new VisualizationFragment()
              };
 
-            AddTabToActionBar(Resource.Drawable.Icon);
-            AddTabToActionBar(Resource.Drawable.Icon);
-            AddTabToActionBar(Resource.Drawable.Icon);
+            AddTabToActionBar(Resource.Drawable.information);
+            AddTabToActionBar(Resource.Drawable.calculator);
+            AddTabToActionBar(Resource.Drawable.chart);
 
             ActionBar.SetSelectedNavigationItem(1);
+
 
             //            ActionBar.SetCustomView(Resource.Layout.ActionBar);
             //            ActionBar.SetDisplayShowCustomEnabled(true);
