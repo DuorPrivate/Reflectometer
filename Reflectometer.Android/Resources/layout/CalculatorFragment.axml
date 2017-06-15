@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:id="@+id/reflectionCoeffField"
-            android:digits="0123456789,"
+            android:digits="0123456789,."
             android:editable="true" />
     </LinearLayout>
     <LinearLayout
@@ -47,7 +47,7 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:id="@+id/returnLossField"
-            android:digits="0123456789,"
+            android:digits="0123456789,."
             android:editable="true" />
     </LinearLayout>
     <LinearLayout
@@ -70,7 +70,7 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:id="@+id/mismatchLossField"
-            android:digits="0123456789,"
+            android:digits="0123456789,."
             android:editable="true" />
     </LinearLayout>
     <LinearLayout
@@ -93,7 +93,7 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:id="@+id/swrField"
-            android:digits="0123456789,"
+            android:digits="0123456789,."
             android:editable="true" />
     </LinearLayout>
     <LinearLayout
@@ -116,7 +116,7 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:id="@+id/loadResistanceField"
-            android:digits="0123456789,"
+            android:digits="0123456789,."
             android:editable="true" />
     </LinearLayout>
     <LinearLayout
@@ -139,8 +139,9 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:id="@+id/lossField"
-            android:digits="0123456789,"
-            android:editable="true" />
+            android:digits="0123456789,."
+            android:editable="true"
+            android:text="0" />
     </LinearLayout>
     <LinearLayout
         android:orientation="vertical"

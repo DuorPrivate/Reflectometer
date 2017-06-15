@@ -4,6 +4,10 @@ using Android.OS;
 using Android.Text;
 using Android.Views;
 using Android.Widget;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using OxyPlot.Xamarin.Android;
 using Reflectometer.Core;
 using System;
 using static Android.Widget.TextView;
@@ -39,6 +43,8 @@ namespace Reflectometer.Android.Fragments
 
             var loadResistanceField = view.FindViewById<EditText>(Resource.Id.loadResistanceField);
             loadResistanceField.EditorAction += EditorAction;
+
+            var loss = view.FindViewById<EditText>(Resource.Id.lossField);
         }
 
         void EditorAction(object sender, EditorActionEventArgs e)
@@ -69,6 +75,12 @@ namespace Reflectometer.Android.Fragments
                 ma.LongLine = new LongLine(value, LongLine.KindOfValue.LoadResistance);
             }
 
+            if (view.FindViewById<EditText>(Resource.Id.lossField).Text != null)
+            {
+                double value = Convert.ToDouble(view.FindViewById<EditText>(Resource.Id.lossField).Text);
+                ma.LongLine.Loss = value;
+            }
+
             Update();
         }
 
@@ -77,11 +89,11 @@ namespace Reflectometer.Android.Fragments
 
         private void Update()
         {
-            view.FindViewById<EditText>(Resource.Id.reflectionCoeffField).Text = Convert.ToString(ma.LongLine.ReflectionCoeff.Real);
-            view.FindViewById<EditText>(Resource.Id.returnLossField).Text = Convert.ToString(ma.LongLine.ReturnLoss);
-            view.FindViewById<EditText>(Resource.Id.mismatchLossField).Text = Convert.ToString(ma.LongLine.MissmatchLoss);
-            view.FindViewById<EditText>(Resource.Id.swrField).Text = Convert.ToString(ma.LongLine.StandingWaveRatio);
-            view.FindViewById<EditText>(Resource.Id.loadResistanceField).Text = Convert.ToString(ma.LongLine.LoadResistance);
+            view.FindViewById<EditText>(Resource.Id.reflectionCoeffField).Text = Convert.ToString(Math.Round((ma.LongLine.ReflectionCoeff.Real),4));
+            view.FindViewById<EditText>(Resource.Id.returnLossField).Text = Convert.ToString(Math.Round((ma.LongLine.ReturnLoss), 4));
+            view.FindViewById<EditText>(Resource.Id.mismatchLossField).Text = Convert.ToString(Math.Round((ma.LongLine.MissmatchLoss), 4));
+            view.FindViewById<EditText>(Resource.Id.swrField).Text = Convert.ToString(Math.Round((ma.LongLine.StandingWaveRatio), 4));
+            view.FindViewById<EditText>(Resource.Id.loadResistanceField).Text = Convert.ToString(Math.Round((ma.LongLine.LoadResistance), 4));
         }
     }
 
@@ -89,15 +101,117 @@ namespace Reflectometer.Android.Fragments
     {
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return inflater.Inflate(Resource.Layout.HelpFragment, container, false);
+            var view = inflater.Inflate(Resource.Layout.HelpFragment, container, false);
+
+            var imageView = view.FindViewById<ImageView>(Resource.Id.imageView1);
+            imageView.SetImageResource(Resource.Drawable.LL);
+
+            return view;
         }
     }
 
     public class VisualizationFragment : Fragment
     {
+        private bool runing = false;
+        private PlotView sumPlot;
+        private PlotModel SumPlotModel;
+        private PlotView passPlot;
+        private PlotView incAndRefPlot;
+
+        private View view;
+
+        private MainActivity ma;
+
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return inflater.Inflate(Resource.Layout.VisualizationFragment, container, false);
+            ma = (MainActivity)Activity;
+
+            view = inflater.Inflate(Resource.Layout.VisualizationFragment, container, false);
+
+            var startButton = view.FindViewById<Button>(Resource.Id.button1);
+            startButton.Click += HandleTouchUpInside;
+
+            var imageView = view.FindViewById<ImageView>(Resource.Id.imageView1);
+            imageView.SetImageResource(Resource.Drawable.reflectometer);
+
+            incAndRefPlot = view.FindViewById<PlotView>(Resource.Id.plotView1);
+            SetIncAndRefPlot(incAndRefPlot);
+
+            passPlot = view.FindViewById<PlotView>(Resource.Id.plotView2);
+            SetPassPlot(passPlot);
+
+            sumPlot = view.FindViewById<PlotView>(Resource.Id.plotView3);
+            SetSumPlot(sumPlot);
+
+
+            return view;
+        }
+
+        private void HandleTouchUpInside(object sender, EventArgs e)
+        {
+
+            ma.LongLine.CulcFuncs();
+
+            SetIncAndRefPlot(incAndRefPlot);
+            SetSumPlot(sumPlot);
+            SetPassPlot(passPlot);
+
+            //runing = !runing;
+        }
+
+
+        private void SetSumPlot(PlotView sumPlot)
+        {
+            SumPlotModel = new PlotModel
+            {
+                Title = "Результирующая",
+                TitleFontSize = 10
+            };
+            SumPlotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Maximum = 2,
+                Minimum = -2,
+            });
+            //            plotModel.Series.Add(new FunctionSeries(ma.LongLine.UpHelpFn, 0, ma.LongLine.XMax, 0.1) { Color = OxyColors.Blue });
+            //            plotModel.Series.Add(new FunctionSeries(ma.LongLine.DownHelpFn, 0, ma.LongLine.XMax, 0.1) { Color = OxyColors.Blue });
+            SumPlotModel.Series.Add(new FunctionSeries(ma.LongLine.SummFn, 0, ma.LongLine.XMax, 0.01) { Color = OxyColors.Red });
+            sumPlot.Model = SumPlotModel;
+        }
+
+        private void SetIncAndRefPlot(PlotView incAndRefPlot)
+        {
+            var plotModel = new PlotModel
+            {
+                Title = "Падающая и отраженные волны",
+                TitleFontSize = 10
+            };
+            plotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Maximum = 2,
+                Minimum = -2,
+            });
+            plotModel.Series.Add(new FunctionSeries(ma.LongLine.IncFn, 0, ma.LongLine.XMax, 0.01) { Color = OxyColors.Red });
+            plotModel.Series.Add(new FunctionSeries(ma.LongLine.RefFn, 0, ma.LongLine.XMax, 0.01) { Color = OxyColors.Yellow });
+            incAndRefPlot.Model = plotModel;
+        }
+
+        private void SetPassPlot(PlotView passPlot)
+        {
+            var plotModel = new PlotModel
+            {
+                Title = "Прошедшая волна",
+                TitleFontSize = 10
+            };
+            plotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Maximum = 2,
+                Minimum = -2,
+            });
+            plotModel.Series.Add(new FunctionSeries(ma.LongLine.PassFn, 0, ma.LongLine.XMax, 0.01) { Color = OxyColors.Red });
+            passPlot.Model = plotModel;
         }
     }
 }

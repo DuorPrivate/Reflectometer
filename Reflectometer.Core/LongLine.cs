@@ -5,26 +5,6 @@ namespace Reflectometer.Core
 {
     public class LongLine
     {
-        public enum KindOfValue
-        {
-            ReflectionCoeff,
-            ReturnLoss,
-            MismatchLoss,
-            SWR,
-            LoadResistance
-        }
-
-        public double Xmax { get; private set; }
-
-        public const double Z0 = 50;
-
-
-        public Complex ReflectionCoeff { get; private set; } //?
-        public double ReturnLoss { get; private set; }
-        public double MissmatchLoss { get; private set; }
-        public double StandingWaveRatio { get; private set; }
-        public double LoadResistance { get; private set; }
-
 
         public LongLine(double value, KindOfValue kind)
         {
@@ -46,8 +26,37 @@ namespace Reflectometer.Core
                     SetByLoadResistance(value);
                     break;
             }
+            CulcFuncs();
         }
 
+        public enum KindOfValue
+        {
+            ReflectionCoeff,
+            ReturnLoss,
+            MismatchLoss,
+            SWR,
+            LoadResistance
+        }
+
+        public const double Z0 = 50;
+        public double XMax = 2;
+        public double Loss = 0;
+        double time = 0;
+
+        private double betha = 2 * Math.PI;
+
+        public Func<double, double> IncFn;
+        public Func<double, double> RefFn;
+        public Func<double, double> PassFn;
+        public Func<double, double> UpHelpFn;
+        public Func<double, double> DownHelpFn;
+        public Func<double, double> SummFn;
+
+        public Complex ReflectionCoeff { get; private set; } //?
+        public double ReturnLoss { get; private set; }
+        public double MissmatchLoss { get; private set; }
+        public double StandingWaveRatio { get; private set; }
+        public double LoadResistance { get; private set; }
 
         private void SetByReflectionCoefficient(double reflectionCoeff)
         {
@@ -57,7 +66,6 @@ namespace Reflectometer.Core
             StandingWaveRatio = (1 + Math.Abs(reflectionCoeff)) / (1 - Math.Abs(reflectionCoeff));
             LoadResistance = -((reflectionCoeff + 1) * Z0 / (reflectionCoeff - 1));
         }
-
         private void SetByReflectionCoefficient()
         {
             ReturnLoss = -20 * Math.Log10(Math.Abs(ReflectionCoeff.Real));
@@ -65,77 +73,57 @@ namespace Reflectometer.Core
             StandingWaveRatio = (1 + Math.Abs(ReflectionCoeff.Real)) / (1 - Math.Abs(ReflectionCoeff.Real));
             LoadResistance = -((ReflectionCoeff.Real + 1) * Z0 / (ReflectionCoeff.Real - 1));
         }
-
         private void SetByReturnLoss(double returnLoss)
         {
             ReflectionCoeff = Math.Pow(10, -returnLoss / 20);
             SetByReflectionCoefficient();
         }
-
         private void SetByMissmatchLoss(double missmatchLoss)
         {
             ReflectionCoeff = Math.Sqrt(1 - Math.Pow(10, missmatchLoss / -10));
             SetByReflectionCoefficient();
         }
-
         private void SetBySWR(double swr)
         {
             ReflectionCoeff = (swr - 1) / (swr + 1);
             SetByReflectionCoefficient();
         }
-
         private void SetByLoadResistance(double loadResistance)
         {
             ReflectionCoeff = (loadResistance - Z0) / (loadResistance + Z0);
             SetByReflectionCoefficient();
         }
 
-        /*   private void Something(double xmax, double z0, double rn, double xn, double lambda, double alpha, double f, double a)
-           {
-               Xmax = xmax;
-               Z0 = z0;
-               Rn = rn;
-               Xn = xn;
-               Lambda = lambda;
-               Alpha = alpha;
-               F = f;
-               A = a;
+        public void CulcFuncs()
+        {
+            double pZ;
 
-               Zn = new Complex(Rn, Xn);
+            if (Z0 >= LoadResistance)
+            {
+                pZ = Math.PI / 2 + ReflectionCoeff.Phase / 2;
+            }
+            else
+            {
+                pZ = -Math.PI / 2 + ReflectionCoeff.Phase / 2;
+            }
 
+            if (time >= 3)
+            {
+                time = 0;
+            }
 
-               if (Rn > Z0)
-               {
-                   ReflectionCoeff = (Zn - Z0) / (Zn + Z0);
-               }
-               else
-               {
-                   ReflectionCoeff = (-Zn + Z0) / (Zn + Z0);
-               }
+            IncFn = (x) => Math.Exp(Loss*(-x)) * Math.Cos(-betha * x + 2 * Math.PI * time);
+            RefFn = (x) => (Math.Exp(-2 * Loss * XMax) * ReflectionCoeff.Real) * Math.Exp(Loss * x) * Math.Cos(betha * x + 2 * Math.PI * time + ReflectionCoeff.Phase);
 
-               var s = (1 + ReflectionCoeff.Magnitude) / (1 - ReflectionCoeff.Magnitude);
+            PassFn = (x) => (Math.Exp(-Loss * XMax) * (1 - ReflectionCoeff.Real)) * Math.Cos(-betha * x + 2 * Math.PI * time + ReflectionCoeff.Phase);
 
-               if (Z0 >= Zn.Real)
-               {
-                   Pz = Math.PI / 2 + ReflectionCoeff.Phase / 2;
-               }
-               else
-               {
-                   Pz = -Math.PI / 2 + ReflectionCoeff.Phase / 2;
-               }
+            SummFn = (x) => Math.Exp(Loss * (-x)) * Math.Cos(-betha * x + 2 * Math.PI * time) + (Math.Exp(-2 * Loss * XMax) * ReflectionCoeff.Real) * Math.Exp(Loss * x) * Math.Cos(betha * x + 2 * Math.PI + ReflectionCoeff.Phase);
 
-               Betha = 2 * Math.PI / Lambda;
+            //UpHelpFn = (x) => Math.Abs(Math.Exp(-Loss * x) * Math.Exp(Math.Sqrt(-1) * betha * x) * Math.Exp(-Math.Sqrt(-1) * pZ) - (Math.Exp(-2 * Loss * XMax) * ReflectionCoeff.Real) * Math.Exp(Loss * x) * Math.Exp(Math.Sqrt(-1) * betha * x) * Math.Exp(Math.Sqrt(-1) * pZ));
+            //DownHelpFn = (x) => -Math.Abs(Math.Exp(-Loss * x) * Math.Exp(Math.Sqrt(-1) * betha * x) * Math.Exp(-Math.Sqrt(-1) * pZ) - (Math.Exp(-2 * Loss * XMax) * ReflectionCoeff.Real) * Math.Exp(Loss * x) * Math.Exp(Math.Sqrt(-1) * betha * x) * Math.Exp(Math.Sqrt(-1) * pZ));
 
-               W = 2 * Math.PI * F;
-
-               B = A * Math.Exp(-2 * Alpha * Xmax) * ReflectionCoeff.Magnitude;
-               B1 = A * Math.Exp(-Alpha * Xmax) * (1-ReflectionCoeff.Magnitude);
-           }
-           */
-
-
-
-
+            time = time + 0.02;
+        }
 
     }
 

@@ -6,9 +6,18 @@
     android:minWidth="25px"
     android:minHeight="25px">
     <TextView
-        android:text="Тут будет справочная/теоретическая информация"
+        android:text="Линия передачи (ЛП) – это устройство для передачи энергии электромагнитных колебаний от источника сигнала к нагрузке. ЛП применяются в различных устройствах на частотах от нуля до соответствующих оптическому диапазону. Конструкция ЛП определяется как рабочим диапазоном частот, так и областью ее применения. Простейшая ЛП состоит из пары проводников, каждый из которых обладает определенным сопротивлением и вносит некоторое затухание."
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/textView1"
-        android:gravity="center" />
+        android:textSize="@dimen/abc_select_dialog_padding_start_material"
+        android:paddingLeft="@dimen/abc_action_bar_overflow_padding_end_material"
+        android:paddingRight="@dimen/abc_action_bar_overflow_padding_end_material"
+        android:paddingStart="@dimen/abc_action_bar_overflow_padding_end_material"
+        android:paddingTop="@dimen/abc_action_bar_overflow_padding_end_material" />
+    <ImageView
+        android:src="@android:drawable/ic_menu_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView1" />
 </LinearLayout>
